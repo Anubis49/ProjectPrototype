@@ -7,7 +7,7 @@ export class Test extends React.Component {
 		this.state = {
 			error: null,
 			items: [],
-			value : "",
+			value : [],
 			postItem: {
 				id : null,
 				name : "",
@@ -52,14 +52,37 @@ export class Test extends React.Component {
 		this.loadData();
 	}
 
+	async putData(url = '') {
+		const response = await fetch(url, {
+			method: 'POST',
+			mode: 'cors',
+			cache: 'no-cache',
+		});
+		response.json().then(
+			(data) => {
+				console.log(data)
+			}
+		);
+
+		this.loadData();
+	}
+
 	changeEmployee_Change(event){
-		console.log(this.state);
+		//console.log(this.state);
 		//event.target.className
+		/*
 		this.setState(
 			state => {
 				state.items[0].name = "Rubert"
 			}
 			);
+		*/
+		this.setState({
+			value: {
+				name : event.target.value,
+				index : (event.target.className),
+			},
+		});
 	}
 
 	changeEmployee_Submit(event){
@@ -71,13 +94,17 @@ export class Test extends React.Component {
 		let list = this.state['items'];
 
 		const listItems = this.state['items'].map((item,index) =>{
-			//console.log(index);
-			console.log(item.name);
+			let listItemsVal;
+			if(this.state.value.index == index){
+				listItemsVal = this.state.value.name;
+			} else{
+				listItemsVal = item.name;
+			}
 			return (
 				<form key={'form' + '_' + String(index) } onSubmit={this.changeEmployee_Submit}>
 					<label>
 						Employee
-						<input type="text" className={index} value={item.name} onChange={this.changeEmployee_Change} />
+						<input type="text" className={index} value={listItemsVal} onChange={this.changeEmployee_Change} />
 					</label>
 					<input type="submit" value="Submit" />
 				</form>
