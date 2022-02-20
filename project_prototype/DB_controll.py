@@ -15,6 +15,22 @@ db.session.add(
 	)
 )
 db.session.add(
+	employeeModel(
+		id = None,
+		name = 'a employee',
+		vaccinated = False,
+	)
+)
+
+db.session.add(
+	employeeModel(
+		id = None,
+		name = 'a sec employee',
+		vaccinated = False,
+	)
+)
+
+db.session.add(
 	TestedModel(
 		id = None,
 		employee_id = 1,

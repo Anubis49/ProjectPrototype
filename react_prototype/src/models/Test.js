@@ -7,12 +7,16 @@ export class Test extends React.Component {
 		this.state = {
 			error: null,
 			items: [],
+			value : "",
 			postItem: {
+				id : null,
 				name : "",
 				vaccinated : false,
-			}
+			},
 		};
 		this.loadData = this.loadData.bind(this);
+	    this.changeEmployee_Change = this.changeEmployee_Change.bind(this);
+	    this.changeEmployee_Submit = this.changeEmployee_Submit.bind(this);
 	}
 
 	componentDidMount() {
@@ -47,29 +51,36 @@ export class Test extends React.Component {
 
 		this.loadData();
 	}
-	
+
+	changeEmployee_Change(event){
+		console.log(this.state);
+		//event.target.className
+		this.setState(
+			state => {
+				state.items[0].name = "Rubert"
+			}
+			);
+	}
+
+	changeEmployee_Submit(event){
+		console.log(this.state.postItem);
+		event.preventDefault();
+	}
+
 	render() {
 		let list = this.state['items'];
-		console.log(list);
-		console.log(this.state);
 
-		const listItems = list.map((item) =>{
+		const listItems = this.state['items'].map((item,index) =>{
+			//console.log(index);
+			console.log(item.name);
 			return (
-				<dl key="{item.id}">
-					<dt key="{item.id}" >id: {item.id}</dt>
-					<dt key="{item.name}" >name: {item.name}</dt>
-					<dt key="{String(item.vaccinated)" >vaccinated: {String(item.vaccinated)}</dt>
-					{
-						item.tested.map((test) =>{
-							return(
-								<dd key={String(test.date)}>
-									{"tested: " + String(test.tested) + '; '}
-									{"date: " + String(test.date)}
-								</dd>
-							)
-						})
-					}
-				</dl>
+				<form key={'form' + '_' + String(index) } onSubmit={this.changeEmployee_Submit}>
+					<label>
+						Employee
+						<input type="text" className={index} value={item.name} onChange={this.changeEmployee_Change} />
+					</label>
+					<input type="submit" value="Submit" />
+				</form>
 			)
 		});
 
@@ -77,6 +88,6 @@ export class Test extends React.Component {
 			<div>
 				{listItems}
 			</div>
-		);
+		)
 	}
 }
