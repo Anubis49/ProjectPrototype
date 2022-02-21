@@ -8,17 +8,18 @@ employee_get_args.add_argument('name',			type=str,	help="insert the name")
 
 employee_post_args = reqparse.RequestParser()
 employee_post_args.add_argument('name',			type=str,	help = "", required = True)
-employee_post_args.add_argument('vaccinated',	type=int,	help = "", required = True)
+employee_post_args.add_argument('vaccinated',	type=int,	help = "", required = False)
 
 employee_put_args = reqparse.RequestParser()
 employee_put_args.add_argument('id',			type=int,	help = "", required = True)
-employee_put_args.add_argument('vaccinated',	type=int,	help = "", required = True)
+employee_put_args.add_argument('name',			type=str,	help = "", required = True)
+#employee_put_args.add_argument('vaccinated',	type=int,	help = "", required = True)
 
 employee_delete_args = reqparse.RequestParser()
 employee_delete_args.add_argument('id',			type=int,	help = "", required = True)
 
-#init db
-#db.create_all()
+
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 class default_api(Resource):
 	__doc__ = 'default api'
@@ -29,11 +30,12 @@ class default_api(Resource):
 		json = []
 		for result in results:
 			json.append(result.output())
-		return json , 201 ,{'Access-Control-Allow-Origin': '*'}
+		return json , 201 , {'Access-Control-Allow-Origin': '*'}
 
 	def post(self):
 		args = employee_post_args.parse_args()
-		employee_vaccinated_bool = bool(args['vaccinated'])
+		#employee_vaccinated_bool = bool(args['vaccinated'])
+		employee_vaccinated_bool = False
 		employee = employeeModel(
 			id = None,
 			name = args['name'],
@@ -41,16 +43,17 @@ class default_api(Resource):
 		)
 		db.session.add(employee)
 		db.session.commit()
-		return employee.output(), 201 ,{'Access-Control-Allow-Origin': '*'}
+		return employee.output(), 201 , {'Access-Control-Allow-Origin': '*'}
 
 	def put(self):
 		args = employee_put_args.parse_args()
 		employee = employeeModel.query.filter_by(id = args['id']).first()
-		employee.vaccinated = bool(args['vaccinated'])
+		employee.name = args['name']
 		print(employee.output())
 		db.session.add(employee)
 		db.session.commit()
-		return employee.output()
+		return employee.output(), 201 , {'Access-Control-Allow-Origin': '*'}
+		#employee.vaccinated = bool(args['vaccinated'])
 
 	def delete(self):
 		args = employee_delete_args.parse_args()
@@ -59,7 +62,7 @@ class default_api(Resource):
 		employee.deleteTests()
 		db.session.delete(employee)
 		db.session.commit()
-		return employeeDeleted
+		return employeeDeleted , 201 , {'Access-Control-Allow-Origin': '*'}
 
 
 test_post_args = reqparse.RequestParser()
